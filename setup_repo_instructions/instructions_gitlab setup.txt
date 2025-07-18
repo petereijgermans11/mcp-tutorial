@@ -1,0 +1,6 @@
+1. Install Extension: Gitlab Workflow
+2. Generate an Personal Account token at innersource.soprasteria.com
+3. Enter that account token as url when clicking on Gitlab Workflow
+4.  a. Clone the repo of choice; git clone https://innersource.soprasteria.com/def-agents/def-agents.git
+    b. Initialize your own Repo and publish on Gitlab
+5. Start building!
