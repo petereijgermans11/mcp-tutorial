@@ -104,7 +104,7 @@ async def setup_langgraph_app():
     load_dotenv()
     llm = await get_llm()
     tools = await get_tools()
-    llm_with_tools = llm.bind_tools(tools=tools)
+    llm_with_tools = llm.bind_tools(tools=tools) # Connects tools to the AI
 
     # Define the prompt template for Rene, the commander agent
     prompt = ChatPromptTemplate.from_messages([
@@ -118,14 +118,15 @@ async def setup_langgraph_app():
     ])
 
     # Chain the prompt with the LLM
-    chain = prompt | llm_with_tools
+    chain = prompt | llm_with_tools # Links personality with AI brain
 
     async def model(state: AgentState):
         # Take the last user message as input
         user_message = state["messages"]
-        response = await chain.ainvoke({"input": user_message})
+        response = await chain.ainvoke({"input": user_message}) # gets AI response
         return {"messages": [response]}
 
+    # Checks if AI wants to use tools
     def tools_router(state: AgentState):
         last_message = state["messages"][-1]
         if hasattr(last_message, "tool_calls") and len(last_message.tool_calls) > 0:
@@ -134,17 +135,19 @@ async def setup_langgraph_app():
             return END
 
     tool_node = ToolNode(tools=tools)
-    graph = StateGraph(AgentState)
-    graph.add_node("model", model)
-    graph.add_node("tool_node", tool_node)
-    graph.set_entry_point("model")
-    graph.add_conditional_edges("model", tools_router)
-    graph.add_edge("tool_node", "model")
 
-    conn = await aiosqlite.connect("checkpoint_06.sqlite")
-    memory = AsyncSqliteSaver(conn=conn)
-    app = graph.compile(checkpointer=memory)
-    return app
+    graph = StateGraph(AgentState) # Creates empty workflow
+    graph.add_node("model", model) # Adds thinking step
+    graph.add_node("tool_node", tool_node) # Adds tool-using step
+    
+    graph.set_entry_point("model") # Starts with thinking
+    graph.add_conditional_edges("model", tools_router) # Decides to use tools or not
+    graph.add_edge("tool_node", "model") # After tools, go back to thinking
+
+    conn = await aiosqlite.connect("checkpoint_06.sqlite") # Creates database
+    memory = AsyncSqliteSaver(conn=conn) #  Makes workflow remember conversations
+    app = graph.compile(checkpointer=memory) # Puts all parts together
+    return app # Returns the ready-to-use AI commander
 
 
 
