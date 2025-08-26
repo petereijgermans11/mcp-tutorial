@@ -91,11 +91,24 @@ async def get_llm():
     )
     # Or use Ollama if needed
     # return ChatOllama(model="qwen3:8b")
+    
+async def divide_agent(a: float, b: float) -> float:
+    """Call the external MCP 'divide' tool and return the result."""
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://localhost:8004/mcp/tools/call",
+            json={
+                "name": "divide",
+                "arguments": {"a": a, "b": b}
+            }
+        )
+        response.raise_for_status()
+        return response.json()["result"]
 
 async def get_tools():
     """Return tool functions bound to the LLM."""
     return [
-        multiply, logistic_agent, intel_agent
+        multiply, logistic_agent, intel_agent, divide_agent
     ]
 
 
@@ -197,6 +210,3 @@ async def chat_endpoint(request: Request, user_input: str = Form(...), thread_id
             yield f"\n__FINAL__:{final_message}"
     return StreamingResponse(event_stream(), media_type="text/plain")
 
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run("src.main:app_instance", host="0.0.0.0", port=8000, reload=True)
