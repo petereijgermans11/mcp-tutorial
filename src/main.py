@@ -91,24 +91,11 @@ async def get_llm():
     )
     # Or use Ollama if needed
     # return ChatOllama(model="qwen3:8b")
-    
-async def divide_agent(a: float, b: float) -> float:
-    """Call the external MCP 'divide' tool and return the result."""
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://localhost:8004/mcp/tools/call",
-            json={
-                "name": "divide",
-                "arguments": {"a": a, "b": b}
-            }
-        )
-        response.raise_for_status()
-        return response.json()["result"]
 
 async def get_tools():
     """Return tool functions bound to the LLM."""
     return [
-        multiply, logistic_agent, intel_agent, divide_agent
+        multiply, logistic_agent, intel_agent
     ]
 
 
