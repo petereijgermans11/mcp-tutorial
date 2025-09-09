@@ -58,7 +58,7 @@ async def multiply(a: int, b: int) -> int:
 async def logistic_agent(item: str) -> str:
     """LLM-powered: Return information about a specific logistic item as a string."""
     prompt = (
-        f"You are a military logistics officer. "
+        f"You are a logistics officer. "
         f"Provide the current quantity and a short description for an {item}'. "
         f"just make up something if you have to"
         f"no markdown language or formatting or **, just plan text!! THIS IS VITAL"
@@ -109,8 +109,8 @@ async def setup_langgraph_app():
     prompt = ChatPromptTemplate.from_messages([
         ("system", (
             "You are Rene, a battalion commander agent. You are leading your unit in an operation to attack Russian forces near Maastricht. "
-            "You are only able to answer military-related questions or perform calculations. "
-            "If the user asks about other topics, politely respond with: 'I am only able to answer military-related questions or perform calculations using tools provided.' "
+            "You are only able to answer project-related questions or perform calculations. "
+            "If the user asks about other topics, politely respond with: 'I am only able to answer project-related questions or perform calculations using tools provided.' "
             "Your orders must be clear, concise, and actionable. For example, if asked about logistics, you might say: 'Ensure all supply trucks are refueled and ready by 0600 hours.'"
         )),
         ("user", "{input}")
