@@ -189,7 +189,19 @@ async def get_tools_external_mcp_agent():
                "blender-mcp"
            ],
            "transport": "stdio"
-    },
+        },
+       
+        "firecrawl-mcp": {
+          "command": "npx",
+          "args": [
+             "-y",
+             "firecrawl-mcp"
+            ],
+           "env": {
+              "FIRECRAWL_API_KEY": "fc-e0b2b8dcc101460a8cbf815d808b07c5"
+            },
+            "transport": "stdio"
+        }
                
 }
     
